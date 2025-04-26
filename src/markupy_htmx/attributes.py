@@ -345,7 +345,7 @@ def trigger(
     return Attribute("hx-trigger", " ".join(values))
 
 
-def trigger_every(every_ms: int, filters: str | None = None) -> Attribute:
+def trigger_every_ms(every_ms: int, filters: str | None = None) -> Attribute:
     return trigger(
         f"every {every_ms}ms",
         filters=filters,

@@ -52,7 +52,7 @@ def test_trigger() -> None:
 
 def test_trigger_every() -> None:
     assert (
-        el.Input(hx.trigger_every(1000, filters="myConditional"))
+        el.Input(hx.trigger_every_ms(1000, filters="myConditional"))
         == """<input hx-trigger="every 1000ms [myConditional]">"""
     )
 
