@@ -24,7 +24,7 @@ def _htmx_handler(old: Attribute | None, new: Attribute) -> Attribute | None:
             return new
 
 
-Inherited = typing.Literal[
+_Inherited = typing.Literal[
     "*",
     "hx-boost",
     "hx-confirm",
@@ -47,7 +47,7 @@ Inherited = typing.Literal[
     "hx-vals",
 ]
 
-Selector = (
+_Selector = (
     str
     | typing.Literal[
         "closest …",
@@ -59,12 +59,12 @@ Selector = (
     ]
 )
 
-SelectorThis = Selector | typing.Literal["this"]
+_SelectorThis = _Selector | typing.Literal["this"]
 
-TriggerSelector = Selector | typing.Literal["document", "window"]
+_TriggerSelector = _Selector | typing.Literal["document", "window"]
 
 
-Swap = typing.Literal[
+_Swap = typing.Literal[
     "innerHTML",
     "outerHTML",
     "textContent",
@@ -76,7 +76,7 @@ Swap = typing.Literal[
     "none",
 ]
 
-HtmxEvent = typing.Literal[
+_HtmxEvent = typing.Literal[
     "htmx:abort",
     "htmx:afterOnLoad",
     "htmx:afterProcessNode",
@@ -124,7 +124,7 @@ HtmxEvent = typing.Literal[
     "htmx:xhr:progress",
 ]
 
-HtmlEvent = typing.Literal[
+_HtmlEvent = typing.Literal[
     # Mouse / pointer
     "click",
     "dblclick",
@@ -195,9 +195,9 @@ HtmlEvent = typing.Literal[
     "unload",
 ]
 
-TriggerEvent = typing.Literal["load", "revealed", "intersect"] | HtmlEvent
+_TriggerEvent = typing.Literal["load", "revealed", "intersect"] | _HtmlEvent
 
-TopBottom = typing.Literal["top", "bottom"]
+_TopBottom = typing.Literal["top", "bottom"]
 
 
 def get(url: str) -> Attribute:
@@ -221,7 +221,7 @@ def put(url: str) -> Attribute:
 
 
 def on(
-    event: str | HtmxEvent | HtmlEvent,
+    event: str | _HtmxEvent | _HtmlEvent,
     value: str,
 ):
     event = _re_sub(r"([a-z0-9])([A-Z])", r"\1-\2", event)
@@ -239,7 +239,7 @@ def select(selector: str) -> Attribute:
     return Attribute("hx-select", selector)
 
 
-def select_oob(*selector: str | tuple[str, Swap]) -> Attribute:
+def select_oob(*selector: str | tuple[str, _Swap]) -> Attribute:
     values = []
     for v in selector:
         if isinstance(v, tuple):
@@ -250,13 +250,13 @@ def select_oob(*selector: str | tuple[str, Swap]) -> Attribute:
 
 
 def swap(
-    swap: Swap,
+    swap: _Swap,
     transition: bool | None = None,
     swap_ms: int | None = None,
     settle_ms: int | None = None,
     ignore_title: bool | None = None,
-    scroll: TopBottom | tuple[str, TopBottom] | None = None,
-    show: TopBottom | tuple[str, TopBottom] | None = None,
+    scroll: _TopBottom | tuple[str, _TopBottom] | None = None,
+    show: _TopBottom | tuple[str, _TopBottom] | None = None,
     focus_scroll: bool | None = None,
 ) -> Attribute:
     values = [swap]
@@ -284,7 +284,7 @@ def swap(
 
 
 def swap_oob(
-    swap: Swap | typing.Literal[True], selector: str | None = None
+    swap: _Swap | typing.Literal[True], selector: str | None = None
 ) -> Attribute:
     values = []
     if swap is True:
@@ -297,19 +297,19 @@ def swap_oob(
     return Attribute("hx-swap-oob", ":".join(values))
 
 
-def target(selector: SelectorThis) -> Attribute:
+def target(selector: _SelectorThis) -> Attribute:
     return Attribute("hx-target", selector)
 
 
 def trigger(
-    event: TriggerEvent | str,
+    event: _TriggerEvent | str,
     *,
     filters: str | None = None,
     once: bool = False,
     changed: bool = False,
     delay_ms: int | None = None,
     throttle_ms: int | None = None,
-    from_selector: TriggerSelector | None = None,
+    from_selector: _TriggerSelector | None = None,
     target_selector: str | None = None,
     consume: bool = False,
     queue: typing.Literal["first", "last", "all", "none"] | None = None,
@@ -366,11 +366,11 @@ def disable() -> Attribute:
     return Attribute("hx-disable", True)
 
 
-def disabled_elt(*selector: SelectorThis) -> Attribute:
+def disabled_elt(*selector: _SelectorThis) -> Attribute:
     return Attribute("hx-disabled-elt", ", ".join(selector))
 
 
-def disinherit(*attributes: Inherited):
+def disinherit(*attributes: _Inherited):
     return Attribute("hx-disinherit", " ".join(attributes))
 
 
@@ -401,7 +401,7 @@ def history_elt(value: bool = True) -> Attribute:
     return Attribute("hx-history-elt", value)
 
 
-def include(selector: SelectorThis) -> Attribute:
+def include(selector: _SelectorThis) -> Attribute:
     return Attribute("hx-include", selector)
 
 
@@ -409,7 +409,7 @@ def indicator(selector: str | typing.Literal["closest …"]) -> Attribute:
     return Attribute("hx-indicator", selector)
 
 
-def inherit(*attributes: Inherited):
+def inherit(*attributes: _Inherited):
     return Attribute("hx-inherit", " ".join(attributes))
 
 
@@ -450,7 +450,7 @@ def request(
 
 
 def sync(
-    selector: SelectorThis,
+    selector: _SelectorThis,
     strategy: None
     | typing.Literal[
         "drop", "abort", "replace", "queue", "queue first", "queue last", "queue all"

@@ -114,7 +114,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "markupy", specifier = ">=1.4.0" }]
+requires-dist = [{ name = "markupy", specifier = ">=2.1.0" }]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=8.3.5" }]
