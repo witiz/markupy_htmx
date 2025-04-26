@@ -14,6 +14,14 @@ def test_on() -> None:
     )
 
 
+def test_on_case() -> None:
+    assert (
+        el.Input(hx.on("htmx:noSSESourceError", ""))
+        == el.Input(hx.on("htmx:no-sse-source-error", ""))
+        == """<input hx-on:htmx:no-sse-source-error="">"""
+    )
+
+
 def test_select_oob() -> None:
     assert (
         el.Input(hx.select_oob("#hello"), hx.select_oob(("#alert", "afterbegin")))

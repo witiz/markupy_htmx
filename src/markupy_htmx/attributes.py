@@ -188,7 +188,6 @@ HtmlEvent = typing.Literal[
     "seeked",
     "waiting",
     # Window / document lifecycle
-    "DOMContentLoaded",
     "visibilitychange",
     "scroll",
     "resize",
@@ -225,9 +224,9 @@ def on(
     event: str | HtmxEvent | HtmlEvent,
     value: str,
 ):
-    words = filter(None, _re_sub(r"([A-Z])", r" \1", event).split())
-    evt = "-".join(words).lower()
-    return Attribute(f"hx-on:{evt}", value)
+    event = _re_sub(r"([a-z0-9])([A-Z])", r"\1-\2", event)
+    event = _re_sub(r"([A-Z]+)([A-Z][a-z])", r"\1-\2", event)
+    return Attribute(f"hx-on:{event.lower()}", value)
 
 
 def push_url(value: str | bool) -> Attribute:
@@ -395,8 +394,7 @@ def headers(value: str | Mapping[typing.Any, typing.Any]) -> Attribute:
 
 
 def history(value: bool) -> Attribute:
-    value = "false" if value is False else None
-    return Attribute("hx-history", value)
+    return Attribute("hx-history", "false" if value is False else None)
 
 
 def history_elt(value: bool = True) -> Attribute:
