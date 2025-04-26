@@ -6,7 +6,6 @@ from re import sub as _re_sub
 from markupy import Attribute, attribute_handlers
 
 
-@attribute_handlers.register
 def _htmx_handler(old: Attribute | None, new: Attribute) -> Attribute | None:
     if old:
         # Allow attributes to be set multiple times and values appended
@@ -22,6 +21,10 @@ def _htmx_handler(old: Attribute | None, new: Attribute) -> Attribute | None:
         elif new.name in {"hx-disinherit", "hx-inherit"}:
             new.value = f"{old.value} {new.value}"
             return new
+    return None
+
+
+attribute_handlers.register(_htmx_handler)
 
 
 _Inherited = typing.Literal[
@@ -223,7 +226,7 @@ def put(url: str) -> Attribute:
 def on(
     event: str | _HtmxEvent | _HtmlEvent,
     value: str,
-):
+) -> Attribute:
     event = _re_sub(r"([a-z0-9])([A-Z])", r"\1-\2", event)
     event = _re_sub(r"([A-Z]+)([A-Z][a-z])", r"\1-\2", event)
     return Attribute(f"hx-on:{event.lower()}", value)
@@ -240,7 +243,7 @@ def select(selector: str) -> Attribute:
 
 
 def select_oob(*selector: str | tuple[str, _Swap]) -> Attribute:
-    values = []
+    values: list[str] = []
     for v in selector:
         if isinstance(v, tuple):
             values.append(":".join(v))
@@ -259,7 +262,7 @@ def swap(
     show: _TopBottom | tuple[str, _TopBottom] | None = None,
     focus_scroll: bool | None = None,
 ) -> Attribute:
-    values = [swap]
+    values: list[str] = [swap]
     if transition is not None:
         values.append(f"transition:{str(transition).lower()}")
     if swap_ms is not None:
@@ -286,7 +289,7 @@ def swap(
 def swap_oob(
     swap: _Swap | typing.Literal[True], selector: str | None = None
 ) -> Attribute:
-    values = []
+    values: list[str] = []
     if swap is True:
         values.append(str(swap).lower())
     else:
@@ -315,7 +318,7 @@ def trigger(
     queue: typing.Literal["first", "last", "all", "none"] | None = None,
     intersect_root: str | None = None,
     intersect_threshold: float | None = None,
-):
+) -> Attribute:
     values = [event]
     if filters is not None:
         values.append(f"[{filters}]")
@@ -370,7 +373,7 @@ def disabled_elt(*selector: _SelectorThis) -> Attribute:
     return Attribute("hx-disabled-elt", ", ".join(selector))
 
 
-def disinherit(*attributes: _Inherited):
+def disinherit(*attributes: _Inherited) -> Attribute:
     return Attribute("hx-disinherit", " ".join(attributes))
 
 
@@ -409,11 +412,13 @@ def indicator(selector: str | typing.Literal["closest …"]) -> Attribute:
     return Attribute("hx-indicator", selector)
 
 
-def inherit(*attributes: _Inherited):
+def inherit(*attributes: _Inherited) -> Attribute:
     return Attribute("hx-inherit", " ".join(attributes))
 
 
-def params(*param: typing.Literal["*", "none"] | str, exclude: bool = False):
+def params(
+    *param: typing.Literal["*", "none"] | str, exclude: bool = False
+) -> Attribute:
     value = ", ".join(param)
     if exclude:
         value = f"not {value}"
@@ -438,7 +443,7 @@ def request(
     timeout_ms: int | None = None,
     credentials: bool | None = None,
     no_headers: bool | None = None,
-):
+) -> Attribute:
     value = {}
     if timeout_ms is not None:
         value["timeout"] = timeout_ms
