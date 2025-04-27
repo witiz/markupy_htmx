@@ -7,7 +7,7 @@ from markupy import Attribute, attribute_handlers
 
 
 def _htmx_handler(old: Attribute | None, new: Attribute) -> Attribute | None:
-    if old:
+    if old is not None and old.value is not None:
         # Allow attributes to be set multiple times and values appended
         if new.name in {
             "hx-select-oob",
