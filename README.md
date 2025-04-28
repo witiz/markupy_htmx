@@ -21,7 +21,7 @@ Like its dependency `markupy`, it is targeting Python 3.10+ versions.
 
 ## Basic usage
 
-All HTMX attributes are exposed in the `markupy_htmx.attributes` module that we recommend you alias to `hx` in order to call attributes with `hx.attr(...)`
+All HTMX attributes are exposed via `markupy_htmx.attributes` that we recommend you alias to `hx` in order to call attributes with `hx.attr(...)`
 
 ```python
 from markupy.elements import Button
@@ -39,12 +39,12 @@ The generated HTML will be the following:
 
 ## Advanced usage
 
-As you saw above, most of the `markupy_htmx` have exactly the same construct as their "native" counterpart.
+As you saw above, most of the `markupy_htmx` attributes have exactly the same construct as their "native" counterpart.
 Some attributes benefited from small adjustments, mostly to improve developer experience and ensure compatibility with Python.
 
 ### hx-on:* attribute
 
-As opposed to the HTMX native attribute that expects the event as part of the attribute name, `markupy_htmx` expects the event as the very first attribute of `hx.on()`:
+As opposed to the HTMX native attribute that expects the event as part of the attribute name, `markupy_htmx` expects the event as the very first argument of `hx.on()`:
 
 ```python
 Button(hx.on("htmx:beforeRequest", "alert('Making a request!')"))
