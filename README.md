@@ -2,9 +2,9 @@
 
 ## Project description
 
-`markupy_htmx` is an extension for [`markupy`](https://markupy.witiz.com) that allows for a simpler HTMX attribute generation by allowing the following:
+`markupy_htmx` is an extension for [`markupy`](https://markupy.witiz.com) that allows for a simpler HTMX attribute generation by enabling the following:
 
-- Full coverage of HTMX attributes, all rewritten as convenient Python functions
+- Full coverage of HTMX attributes, all rewritten as convenient Python functions/helpers
 - Static typing to improve reliability and error detection
 - IDE autocomplete of existing attributes and for each of them, parameter types and values
 
@@ -47,13 +47,18 @@ Some attributes benefited from small adjustments, mostly to improve developer ex
 As opposed to the HTMX native attribute that expects the event as part of the attribute name, `markupy_htmx` expects the event as the very first attribute of `hx.on()`:
 
 ```python
-hx.on("htmx:beforeRequest", "alert('Making a request!')")
+Button(hx.on("htmx:beforeRequest", "alert('Making a request!')"))
+```
+
+```html
+<button hx-on:htmx:before-request="alert(&#39;Making a request!&#39;)"></button>
 ```
 
 Several things to note here:
 
-- The event name can be written both in it's original "camelCase" Javascript syntax or the adapted "kebab-case" enforced by HTMX when written as part of the attribute name
+- The event name can be written both in it's original "camelCase" Javascript syntax or the adapted "kebab-case" syntax enforced by HTMX when written as part of the attribute name
 - All valid HTMX events and standard HTML events will be autocompleted by your IDE for convenience, but you can as well type your own events
+- The Javascript content is escaped by `markupy` when it is rendered as part of an attribute's value, but the code is interpreted normally by the browsers
 
 ### Multi-value attributes
 
@@ -99,7 +104,7 @@ Button(hx.trigger("load"), hx.trigger("click", delay_ms=1000))["Click"]
 <button hx-trigger="load, click delay:1000ms">Click</button>
 ```
 
-Talking about the `hx-trigger` attribute, it has a special variant called `hx.trigger_every()` that is used for polling. It's a dedicated method because it takes different params from the regular "event based" triggers:
+Talking about the `hx-trigger` attribute, it has a special variant called `hx.trigger_every_ms()` that is used for polling. It's a dedicated method because it takes different params from the regular "event based" triggers:
 
 ```python
 Button(hx.trigger_every_ms(1000, filters="myConditional"))
