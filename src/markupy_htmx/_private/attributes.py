@@ -5,22 +5,32 @@ from re import sub as _re_sub
 
 from markupy import Attribute, attribute_handlers
 
+COMMA_SEPARATED = {
+    "hx-select-oob",
+    "hx-trigger",
+    "hx-disabled-elt",
+    "hx-ext",
+    "hx-params",
+}
+
+SPACE_SEPARATED = {"hx-disinherit", "hx-inherit"}
+
 
 @attribute_handlers.register
 def htmx_handler(old: Attribute | None, new: Attribute) -> Attribute | None:
     if old is not None and old.value is not None:
         # Allow attributes to be set multiple times and values appended
-        if new.name in {
-            "hx-select-oob",
-            "hx-trigger",
-            "hx-disabled-elt",
-            "hx-ext",
-            "hx-params",
-        }:
-            new.value = f"{old.value}, {new.value}"
-            return new
-        elif new.name in {"hx-disinherit", "hx-inherit"}:
-            new.value = f"{old.value} {new.value}"
+        separator = None
+        if new.name in COMMA_SEPARATED:
+            separator = ", "
+        elif new.name in SPACE_SEPARATED:
+            separator = " "
+
+        if separator is not None:
+            if new.value:
+                new.value = f"{old.value}{separator}{new.value}"
+            else:
+                new.value = old.value
             return new
     return None
 
