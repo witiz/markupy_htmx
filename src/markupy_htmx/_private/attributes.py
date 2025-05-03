@@ -1,7 +1,7 @@
-import typing
 from collections.abc import Mapping
 from json import dumps as _json_dumps
 from re import sub as _re_sub
+from typing import Any, Literal
 
 from markupy import Attribute, attribute_handlers
 
@@ -18,7 +18,7 @@ SPACE_SEPARATED = {"hx-disinherit", "hx-inherit"}
 
 @attribute_handlers.register
 def htmx_handler(old: Attribute | None, new: Attribute) -> Attribute | None:
-    if old is not None and old.value is not None:
+    if old is not None and old.value is not None and new.value is not None:
         # Allow attributes to be set multiple times and values appended
         separator = None
         if new.name in COMMA_SEPARATED:
@@ -27,15 +27,12 @@ def htmx_handler(old: Attribute | None, new: Attribute) -> Attribute | None:
             separator = " "
 
         if separator is not None:
-            if new.value:
-                new.value = f"{old.value}{separator}{new.value}"
-            else:
-                new.value = old.value
+            new.value = f"{old.value}{separator}{new.value}"
             return new
     return None
 
 
-InheritedAttributes = typing.Literal[
+InheritedAttributes = Literal[
     "*",
     "hx-boost",
     "hx-confirm",
@@ -59,8 +56,7 @@ InheritedAttributes = typing.Literal[
 ]
 
 Selector = (
-    str
-    | typing.Literal[
+    Literal[
         "closest …",
         "find …",
         "next",
@@ -68,14 +64,15 @@ Selector = (
         "previous",
         "previous …",
     ]
+    | str
 )
 
-SelectorThis = Selector | typing.Literal["this"]
+SelectorThis = Selector | Literal["this"]
 
-TriggerSelector = Selector | typing.Literal["document", "window"]
+TriggerSelector = Selector | Literal["document", "window"]
 
 
-Swap = typing.Literal[
+Swap = Literal[
     "innerHTML",
     "outerHTML",
     "textContent",
@@ -87,7 +84,7 @@ Swap = typing.Literal[
     "none",
 ]
 
-HtmxEvent = typing.Literal[
+HtmxEvent = Literal[
     "htmx:abort",
     "htmx:afterOnLoad",
     "htmx:afterProcessNode",
@@ -135,7 +132,7 @@ HtmxEvent = typing.Literal[
     "htmx:xhr:progress",
 ]
 
-HtmlEvent = typing.Literal[
+HtmlEvent = Literal[
     # Mouse / pointer
     "click",
     "dblclick",
@@ -206,9 +203,9 @@ HtmlEvent = typing.Literal[
     "unload",
 ]
 
-TriggerEvent = typing.Literal["load", "revealed", "intersect"] | HtmlEvent
+TriggerEvent = Literal["load", "revealed", "intersect"] | HtmlEvent
 
-TopBottom = typing.Literal["top", "bottom"]
+TopBottom = Literal["top", "bottom"]
 
 
 class HtmxAttributes:
@@ -288,7 +285,7 @@ class HtmxAttributes:
         return Attribute("hx-swap", " ".join(values))
 
     def swap_oob(
-        self, swap: Swap | typing.Literal[True], selector: str | None = None
+        self, swap: Swap | Literal[True], selector: str | None = None
     ) -> Attribute:
         values: list[str] = []
         if swap is True:
@@ -315,7 +312,7 @@ class HtmxAttributes:
         from_selector: TriggerSelector | None = None,
         target_selector: str | None = None,
         consume: bool = False,
-        queue: typing.Literal["first", "last", "all", "none"] | None = None,
+        queue: Literal["first", "last", "all", "none"] | None = None,
         intersect_root: str | None = None,
         intersect_threshold: float | None = None,
     ) -> Attribute:
@@ -350,7 +347,7 @@ class HtmxAttributes:
             filters=filters,
         )
 
-    def vals(self, value: str | Mapping[typing.Any, typing.Any]) -> Attribute:
+    def vals(self, value: str | Mapping[Any, Any]) -> Attribute:
         res = _json_dumps(value) if isinstance(value, Mapping) else value
         return Attribute("hx-vals", res)
 
@@ -373,7 +370,7 @@ class HtmxAttributes:
 
     def encoding(
         self,
-        encoding: typing.Literal[
+        encoding: Literal[
             "application/x-www-form-urlencoded",
             "multipart/form-data",
         ],
@@ -384,7 +381,7 @@ class HtmxAttributes:
         value = ", ".join(map(lambda e: f"ignore:{e}" if ignore else e, extension))
         return Attribute("hx-ext", value)
 
-    def headers(self, value: str | Mapping[typing.Any, typing.Any]) -> Attribute:
+    def headers(self, value: str | Mapping[Any, Any]) -> Attribute:
         res = _json_dumps(value) if isinstance(value, Mapping) else value
         return Attribute("hx-headers", res)
 
@@ -397,14 +394,14 @@ class HtmxAttributes:
     def include(self, selector: SelectorThis) -> Attribute:
         return Attribute("hx-include", selector)
 
-    def indicator(self, selector: str | typing.Literal["closest …"]) -> Attribute:
+    def indicator(self, selector: str | Literal["closest …"]) -> Attribute:
         return Attribute("hx-indicator", selector)
 
     def inherit(self, *attributes: InheritedAttributes) -> Attribute:
         return Attribute("hx-inherit", " ".join(attributes))
 
     def params(
-        self, *param: typing.Literal["*", "none"] | str, exclude: bool = False
+        self, *param: Literal["*", "none"] | str, exclude: bool = False
     ) -> Attribute:
         value = ", ".join(param)
         if exclude:
@@ -441,7 +438,7 @@ class HtmxAttributes:
         self,
         selector: SelectorThis,
         strategy: None
-        | typing.Literal[
+        | Literal[
             "drop",
             "abort",
             "replace",
