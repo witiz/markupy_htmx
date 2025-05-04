@@ -1,7 +1,7 @@
-import types
 from collections.abc import Mapping
 from json import dumps as _json_dumps
 from re import sub as _re_sub
+from types import ModuleType
 from typing import Any, Literal
 
 from markupy import Attribute, attribute_handlers
@@ -209,7 +209,7 @@ TriggerEvent = Literal["load", "revealed", "intersect"] | HtmlEvent
 TopBottom = Literal["top", "bottom"]
 
 
-class HtmxAttributes(types.ModuleType):
+class HtmxAttributes(ModuleType):
     def get(self, url: str) -> Attribute:
         return Attribute("hx-get", url)
 
