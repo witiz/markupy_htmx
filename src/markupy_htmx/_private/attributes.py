@@ -1,3 +1,4 @@
+import types
 from collections.abc import Mapping
 from json import dumps as _json_dumps
 from re import sub as _re_sub
@@ -208,7 +209,7 @@ TriggerEvent = Literal["load", "revealed", "intersect"] | HtmlEvent
 TopBottom = Literal["top", "bottom"]
 
 
-class HtmxAttributes:
+class HtmxAttributes(types.ModuleType):
     def get(self, url: str) -> Attribute:
         return Attribute("hx-get", url)
 
