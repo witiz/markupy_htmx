@@ -1,5 +1,5 @@
 from .attributes import HtmxAttributes
 
-attributes = HtmxAttributes()
+attributes: HtmxAttributes = HtmxAttributes()
 
 __all__ = ["attributes"]
