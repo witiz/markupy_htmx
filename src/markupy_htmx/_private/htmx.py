@@ -28,7 +28,7 @@ def htmx_handler(old: Attribute | None, new: Attribute) -> Attribute | None:
 
         if separator is not None:
             new.value = f"{old.value}{separator}{new.value}"
-        return new
+            return new
     return None
 
 
